@@ -1,65 +1,79 @@
 import streamlit as st
+import time
 
-# 1. Page Setup
-st.set_page_config(page_title="Social Breakdown Bingo", page_icon="🎲")
+# 1. Page Configuration
+st.set_page_config(page_title="Social Breakdown Quiz", page_icon="🧪")
 
-# 2. Styling the Header
 st.markdown("""
     <style>
-    .title {
-        color: #ad1457;
-        text-align: center;
-        font-size: 40px;
-        font-weight: bold;
-    }
-    .subtitle {
-        text-align: center;
-        font-style: italic;
-        margin-bottom: 20px;
-    }
+    .main-title { color: #ad1457; text-align: center; font-size: 45px; font-weight: bold; }
+    .quiz-box { background-color: #fce4ec; padding: 20px; border-radius: 15px; border: 2px solid #ad1457; }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown('<div class="title">SOCIAL BREAKDOWN BINGO</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Are you a Sociology Rebel or a Perfectly Molded Product?</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">SOCIAL BREAKDOWN QUIZ</div>', unsafe_allow_html=True)
+st.write("<center><i>Are you a Sociology Rebel or a Perfectly Molded Product?</i></center>", unsafe_allow_html=True)
+st.divider()
 
-# 3. The Bingo Items
+# 2. The Questions
 items = [
-    "Home Voice vs Public Voice", "Called teacher 'Mom'", "Bell Anxiety",
-    "Hidden from prof at mall", "Gendered Toys", "Grade Chaser",
-    "Hand Raising at home", "Secret Family Rules", "Guilt for being late"
+    "Do you use a different 'voice' at home versus in public?",
+    "Have you ever accidentally called a teacher 'Mom' or 'Dad'?",
+    "Do you feel a spike of anxiety when you hear a school bell or timer?",
+    "Have you ever hidden in a store to avoid seeing a professor?",
+    "Did you grow up with toys strictly 'meant' for your gender?",
+    "Do you feel your self-worth is tied to your GPA or grades?",
+    "Have you ever raised your hand to speak while at the dinner table?",
+    "Does your family have 'unspoken rules' that outsiders wouldn't get?",
+    "Do you feel intense guilt even if you are only 2 minutes late?"
 ]
 
-# 4. Creating the 3x3 Grid
-# We use columns to make it look like a bingo card
-cols = st.columns(3)
-checkbox_states = []
-
-for i, item in enumerate(items):
-    with cols[i % 3]:
-        # This creates the checkbox and saves its True/False value
-        is_checked = st.checkbox(item, key=f"check_{i}")
-        checkbox_states.append(is_checked)
-
-st.markdown("---")
-
-# 5. The Diagnosis Logic
-# Center the button using columns
-left, mid, right = st.columns([1, 2, 1])
-
-with mid:
-    if st.button("GET DIAGNOSIS", use_container_width=True):
-        score = sum(checkbox_states)
-        
-        st.subheader("--- ANALYZING DATA FOR NOUR & HOUDA ---")
-        st.metric("CONFORMITY SCORE", f"{score}/9")
-        
-        if score <= 3:
-            st.error("RESULT: SYSTEM GLITCH DETECTED.")
-            st.write("**Diagnosis:** You have resisted the Personality Factory. A true sociology rebel!")
-        elif score <= 6:
-            st.warning("RESULT: STANDARD PRODUCT APPROVED.")
-            st.write("**Diagnosis:** Successfully socialized. You fit the 'Society in Miniature' perfectly.")
+# 3. Quiz Form
+with st.form("bingo_quiz"):
+    st.write("### Select all that apply to you:")
+    
+    # We use a dictionary to store responses
+    responses = {}
+    
+    # Split questions into two columns for better flow
+    col1, col2 = st.columns(2)
+    
+    for i, question in enumerate(items):
+        if i % 2 == 0:
+            responses[i] = col1.checkbox(question)
         else:
-            st.success("RESULT: ELITE AGENT OF CONFORMITY.")
-            st.write("**Diagnosis:** Parsons and Durkheim would be proud. You ARE the system!")
+            responses[i] = col2.checkbox(question)
+            
+    submit = st.form_submit_button("SUBMIT FOR ANALYSIS")
+
+# 4. Processing Results
+if submit:
+    score = sum(responses.values())
+    
+    with st.status("Running Sociological Algorithms...", expanded=True) as status:
+        st.write("Scanning for internalized norms...")
+        time.sleep(1)
+        st.write("Evaluating peer-group influence...")
+        time.sleep(1)
+        st.write("Comparing data for Nour & Houda...")
+        time.sleep(1)
+        status.update(label="Analysis Complete!", state="complete", expanded=False)
+
+    st.divider()
+    
+    # Final Result Display
+    st.balloons()
+    st.markdown(f"## YOUR CONFORMITY SCORE: **{score}/9**")
+
+    if score <= 3:
+        st.error("### RESULT: SYSTEM GLITCH DETECTED.")
+        st.write("**Diagnosis:** You are a **Sociology Rebel**. You have successfully resisted the 'Personality Factory.' Your individuality remains unformatted by the machine.")
+    elif score <= 6:
+        st.warning("### RESULT: STANDARD PRODUCT APPROVED.")
+        st.write("**Diagnosis:** You are **Successfully Socialized**. You fit the 'Society in Miniature' perfectly. A balanced participant in the social contract.")
+    else:
+        st.success("### RESULT: ELITE AGENT OF CONFORMITY.")
+        st.write("**Diagnosis:** **The Ultimate Social Subject.** Parsons and Durkheim would be proud. You don't just follow the system—you ARE the system!")
+   
+        
+        
