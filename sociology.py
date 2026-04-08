@@ -59,4 +59,7 @@ with mid:
             st.write("**Diagnosis:** You have resisted the Personality Factory. A true sociology rebel!")
         elif score <= 6:
             st.warning("RESULT: STANDARD PRODUCT APPROVED.")
-            st.write("**Diagnosis:** Successfully socialized. You fit the 'Society in
+            st.write("**Diagnosis:** Successfully socialized. You fit the 'Society in Miniature' perfectly.")
+        else:
+            st.success("RESULT: ELITE AGENT OF CONFORMITY.")
+            st.write("**Diagnosis:** Parsons and Durkheim would be proud. You ARE the system!")
